@@ -26,32 +26,42 @@ public class BootStrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Author eric = new Author("Eric", "Evans");
-        Book book = new Book("Domain Driven Design", "123123");
-        eric.getBooks().add(book);
-        book.getAuthors().add(eric);
+        System.out.println("Started in Bootstrap");
 
+        Publisher publisher = new Publisher();
+        publisher.setName("SFG Publishing");
+        publisher.setCity("Moskau");
+        publisher.setState("Moskau State");
+        publisherRepository.save(publisher);
+
+        System.out.println("Publisher Count: " + publisherRepository.count());
+
+        Author eric = new Author("Eric", "Evans");
+        Book domain_driven_design = new Book("Domain Driven Design", "123123");
+        eric.getBooks().add(domain_driven_design);
+        domain_driven_design.getAuthors().add(eric);
+        domain_driven_design.setPublisher(publisher);
+        publisher.getBooks().add(domain_driven_design);
 
         // Save to the H2 database
         authorRepository.save(eric);
-        bookRepository.save(book);
+        bookRepository.save(domain_driven_design);
+        publisherRepository.save(publisher);
 
         Author rod = new Author("Rod","Johnson");
         Book noEJB = new Book("J2EE Development without EJB", "3169915");
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
 
+
+        noEJB.setPublisher(publisher);
+        publisher.getBooks().add(noEJB);
         authorRepository.save(rod);
         bookRepository.save(noEJB);
-
-        Publisher publisher = new Publisher();
-        publisher.setName("SFG Publishing");
-        publisher.setCity("Moskau");
-
         publisherRepository.save(publisher);
 
-        System.out.println("Started in Bootstrap");
         System.out.println("Number of Books: " + bookRepository.count());
-        System.out.println("Number of Publishers: " + publisherRepository.count());
+        System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
+
     }
 }
